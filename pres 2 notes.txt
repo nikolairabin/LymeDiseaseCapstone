@@ -1,0 +1,54 @@
+group 1 day 2: Need better transitions.
+The progress made was impressive
+time went over
+
+group 2:
+Good presentation, a little bit low energy
+
+group 3:
+great depth on the project. What you are able to accomplish with machine learning is insanly cool
+
+tourism: Good transitions. Work seems good. 
+
+Outline:
+The outline for today's presentation is as follows.
+
+First we will be going over a quick recap of what are project is and what we previously accomplished
+
+Then we will go into the new project updates
+After that we will be going over the updated timeline followed by the acknowlegments
+
+Recap:
+If you all remember correctly, our project used to be about women in climate change, 
+but the data for that project got corrupted.]
+
+Our new project is about lyme disease and the goal of the project is to gather, plot, and analyzie the data to draw
+conclusions to maybe help understand how to reduce the number of cases
+
+Like we went over last presentation, this is important because it has affected tons of people and it
+gives people many averse health affects, like fever, fatigue and eve cerebral paulsy
+
+At the time of last presentation, we had met with our client, set the team goals and started gathering data
+
+
+Plots:
+The next step in the project was to make plots. You might notice that there are no plots on the page.
+There was not enough room for them on this slide, so I put them on a seperate one.
+
+All the plots we have made are done using R with the libraries ggplot2 and usmap. We decided to use usmap,
+because it allows us to make maps good looking without having to do much work. We used ggplot 2 when we needed
+a bit more cutomizability. ggplot was also used for the non-map plots.
+
+The reason why we are doing this is because it visualizes the data. Which not only helps us find the relevnt variables,
+it also makes the data more palatable for everyone else. Once we have found some variables that could be related to lyme
+disease, we do more in depth plots on those variables. We then repeat this proccess until we feel we've gotten all we cna out of the data
+There is still some work to be done with this, but we're very close.
+
+Examples:
+Here are some example plots. The plot on the left is lyme disease cases. 
+The plot on the top right is the human development index for each state. This plot was made using usmap. 
+You can see that there does not seem like there could be a slight correlation between a high hdi and lyme disease,
+but this probably because areas with high hdi have cities.
+
+The plot in the bottom right is data on a few speices of rat. This was made using ggplot.
+As you can see, there does not appear to be much of a correlation. 
