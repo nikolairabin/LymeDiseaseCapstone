@@ -13,52 +13,62 @@ income = read.csv(file = "income.csv") #county
 mammals = read.csv(file = "Mammals.csv") #animal
 rAndD = read.csv(file = "r&d.csv") #state
 reptiles = read.csv(file = "reptiles.csv") #animal
-lymesState = read.csv(file = "lymesState.csv")
-lymesCounty = read.csv(file = "lymesCounty.csv")
+lymesState = read.csv(file = "lymesState.csv") #state
+lymesCounty = read.csv(file = "lymesCounty.csv") #state
 
-
-#install.packages("usmap")
-library(usmap) #import the package
+#visualization libraries
+library(usmap) 
 library(mapdata)
-library(ggplot2) #use ggplot2 to add layer for visualization
-
+library(ggplot2) 
+#changing all county data to be upper case so that the variables are uniform
 lymesCounty$County = toupper(lymesCounty$County)
 lymesCounty$State = toupper(lymesCounty$State)
+
 income$County = toupper(income$County)
 income$State = toupper(income$State)
+
 popDensity$County = toupper(popDensity$County)
 popDensity$State = toupper(popDensity$State)
+
 populationTotal$County = toupper(populationTotal$County)
 populationTotal$State = toupper(populationTotal$State)
 
+#merging data with county as parameter
 allCountyData <- merge(lymesCounty, income, by = c('County', 'State'), all.x = TRUE)
 allCountyData <- merge(allCountyData, popDensity, by = c('County', 'State'), all.x = TRUE)
 allCountyData <- merge(allCountyData, populationTotal, by = c('County', 'State'), all.x = TRUE)
 
+#Ignoring places without any cases
 allCountyData = allCountyData[allCountyData$Cases2018 > 0, ]
 
+#sorting states alphabetically to make merging easier for state data
+#Also added in some 
 lymes <- lymes[order(lymes$State),]
 hdi <-hdi[order(hdi$state),]
 rAndD <-rAndD[order(rAndD$State),]
 lymes$hdi = hdi$HDI
 lymes$rAndD = rAndD$Expenditures.on.R.D.per.capita.in.US..2.
+#Ignoring places without any cases
 lymes = lymes[lymes$X2018.Incidence > 0, ]
-#hdi doesn't seem good
+
+#Plotting the varibales in merged data
+#hdi vs lyme
 lymesVHDI = ggplot() + geom_point(data = as.data.frame(lymesState), aes(x = X2018.Incidence, y = hdi))
 lymesVHDI
-#not much here either
+#r and d vs lyme
 lymesVrAndD = ggplot() + geom_point(data = as.data.frame(lymesState), aes(x = X2018.Incidence, y = rAndD))
 lymesVrAndD
-
+#income per county vs lyme
 lymesVincome = ggplot() + geom_point(data = as.data.frame(allCountyData), aes(x = Cases2018, y = Per.capitaincome))
 lymesVincome
-#density
+#pop density vs lyme
 lymesVpopDen = ggplot() + geom_point(data = as.data.frame(allCountyData), aes(x = Cases2018, y = Population))
 lymesVpopDen
-#total
+#total pop vs lyme
 lymesVpopDen = ggplot() + geom_point(data = as.data.frame(allCountyData), aes(x = Cases2018, y = POPESTIMATE2019))
 lymesVpopDen
 
+#plots for presentaiton. Not too usefful either
 plot_usmap(data = hdi, values = "HDI", regions = "states") + 
   scale_fill_continuous(low = "white", high = "dark green", name = "HDI", label = scales::comma) + 
   labs(title = "U.S. States HDI",
