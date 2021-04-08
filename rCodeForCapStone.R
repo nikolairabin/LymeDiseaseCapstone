@@ -2,23 +2,62 @@ library(tidyr)
 library(knitr) # I recommend doing this
 setwd("C:/Users/Nikolai Rabin/Documents/lymes")
 #Convert all csv to data frames
-precipitation = read.csv(file = "110-pcp-202001-60.csv")
-tempurature = read.csv(file = "110-tavg-202001-60.csv")
-amphibians = read.csv(file = "amphibians.csv")
-birds = read.csv(file = "birds.csv")
-populationTotal = read.csv(file = "co-est2019-alldata.csv")
-popDensity = read.csv(file = "Current-Population-Density.csv")
-hdi = read.csv(file = "hdi_data.csv")
-income = read.csv(file = "income.csv")
-mammals = read.csv(file = "Mammals.csv")
-rAndD = read.csv(file = "r&d.csv")
-reptiles = read.csv(file = "reptiles.csv")
+precipitation = read.csv(file = "110-pcp-202001-60.csv") #county
+temperature = read.csv(file = "110-tavg-202001-60.csv") #county
+amphibians = read.csv(file = "amphibians.csv") #animal
+birds = read.csv(file = "birds.csv") #animal
+populationTotal = read.csv(file = "co-est2019-alldata.csv") #county
+popDensity = read.csv(file = "Current-Population-Density.csv") #county
+hdi = read.csv(file = "hdi_data.csv") #state
+income = read.csv(file = "income.csv") #county
+mammals = read.csv(file = "Mammals.csv") #animal
+rAndD = read.csv(file = "r&d.csv") #state
+reptiles = read.csv(file = "reptiles.csv") #animal
+lymesState = read.csv(file = "lymesState.csv")
+lymesCounty = read.csv(file = "lymesCounty.csv")
 
 
 #install.packages("usmap")
 library(usmap) #import the package
 library(mapdata)
 library(ggplot2) #use ggplot2 to add layer for visualization
+
+lymesCounty$County = toupper(lymesCounty$County)
+lymesCounty$State = toupper(lymesCounty$State)
+income$County = toupper(income$County)
+income$State = toupper(income$State)
+popDensity$County = toupper(popDensity$County)
+popDensity$State = toupper(popDensity$State)
+populationTotal$County = toupper(populationTotal$County)
+populationTotal$State = toupper(populationTotal$State)
+
+allCountyData <- merge(lymesCounty, income, by = c('County', 'State'), all.x = TRUE)
+allCountyData <- merge(allCountyData, popDensity, by = c('County', 'State'), all.x = TRUE)
+allCountyData <- merge(allCountyData, populationTotal, by = c('County', 'State'), all.x = TRUE)
+
+allCountyData = allCountyData[allCountyData$Cases2018 > 0, ]
+
+lymes <- lymes[order(lymes$State),]
+hdi <-hdi[order(hdi$state),]
+rAndD <-rAndD[order(rAndD$State),]
+lymes$hdi = hdi$HDI
+lymes$rAndD = rAndD$Expenditures.on.R.D.per.capita.in.US..2.
+lymes = lymes[lymes$X2018.Incidence > 0, ]
+#hdi doesn't seem good
+lymesVHDI = ggplot() + geom_point(data = as.data.frame(lymesState), aes(x = X2018.Incidence, y = hdi))
+lymesVHDI
+#not much here either
+lymesVrAndD = ggplot() + geom_point(data = as.data.frame(lymesState), aes(x = X2018.Incidence, y = rAndD))
+lymesVrAndD
+
+lymesVincome = ggplot() + geom_point(data = as.data.frame(allCountyData), aes(x = Cases2018, y = Per.capitaincome))
+lymesVincome
+#density
+lymesVpopDen = ggplot() + geom_point(data = as.data.frame(allCountyData), aes(x = Cases2018, y = Population))
+lymesVpopDen
+#total
+lymesVpopDen = ggplot() + geom_point(data = as.data.frame(allCountyData), aes(x = Cases2018, y = POPESTIMATE2019))
+lymesVpopDen
 
 plot_usmap(data = hdi, values = "HDI", regions = "states") + 
   scale_fill_continuous(low = "white", high = "dark green", name = "HDI", label = scales::comma) + 

@@ -1,4 +1,4 @@
-Location ID,Location,Value,Rank,Anomaly (1901-2000 base period),1901-2000 Mean
+Location ID,County,Value,Rank,Anomaly (1901-2000 base period),1901-2000 Mean
 AL-001,Autauga County,66,121,2.1,63.9
 AL-003,Baldwin County,68.8,122,2,66.8
 AL-005,Barbour County,66.7,122,1.9,64.8
