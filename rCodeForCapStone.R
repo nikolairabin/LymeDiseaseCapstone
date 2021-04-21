@@ -20,6 +20,11 @@ lymesCounty = read.csv(file = "lymesCounty.csv") #state
 library(usmap) 
 library(mapdata)
 library(ggplot2) 
+
+#factor the animal data
+
+
+
 #changing all county data to be upper case so that the variables are uniform
 lymesCounty$County = toupper(lymesCounty$County)
 lymesCounty$State = toupper(lymesCounty$State)
@@ -43,17 +48,17 @@ allCountyData = allCountyData[allCountyData$Cases2018 > 0, ]
 
 #sorting states alphabetically to make merging easier for state data
 #Also added in some 
-lymes <- lymes[order(lymes$State),]
+lymesState <- lymesState[order(lymesState$State),]
 hdi <-hdi[order(hdi$state),]
 rAndD <-rAndD[order(rAndD$State),]
-lymes$hdi = hdi$HDI
-lymes$rAndD = rAndD$Expenditures.on.R.D.per.capita.in.US..2.
+lymesState$hdi = hdi$HDI
+lymesState$rAndD = rAndD$Expenditures.on.R.D.per.capita.in.US..2.
 #Ignoring places without any cases
-lymes = lymes[lymes$X2018.Incidence > 0, ]
+lymesState = lymesState[lymesState$X2018.Incidence > 0, ]
 
 #Plotting the varibales in merged data
 #hdi vs lyme
-lymesVHDI = ggplot() + geom_point(data = as.data.frame(lymesState), aes(x = X2018.Incidence, y = hdi))
+lymesVHDI = ggplot() + geom_point(data = as.data.frame(lymesState), aes(x = X2018.Incidence, y = hdi))+ labs(title="Lyme Disease Incidence vs HDI(state)", x ="Lyme Disease Incidence", y = "HDI")
 lymesVHDI
 #r and d vs lyme
 lymesVrAndD = ggplot() + geom_point(data = as.data.frame(lymesState), aes(x = X2018.Incidence, y = rAndD))
@@ -65,8 +70,11 @@ lymesVincome
 lymesVpopDen = ggplot() + geom_point(data = as.data.frame(allCountyData), aes(x = Cases2018, y = Population))
 lymesVpopDen
 #total pop vs lyme
-lymesVpopDen = ggplot() + geom_point(data = as.data.frame(allCountyData), aes(x = Cases2018, y = POPESTIMATE2019))
+lymesVpopDen = ggplot() + geom_point(data = as.data.frame(allCountyData), aes(x = Cases2018, y = POPESTIMATE2019/1000000)) + labs(title="Lyme Disease Cases vs Total Population(county)", x ="Lyme Disease Cases", y = "Total Population(millions)")
 lymesVpopDen
+
+m <- lm(lymesState$hdi ~ lymesState$X2018.Incidence)
+rs <- summary(m)$r.squared
 
 #plots for presentaiton. Not too usefful either
 plot_usmap(data = hdi, values = "HDI", regions = "states") + 
@@ -112,6 +120,54 @@ gg1 +
   geom_point(data = ratData, aes(x = long, y = lat), color = "red", size = 3) +
   geom_point(data = ratData2, aes(x = long, y = lat), color = "blue", size = 3) +
   geom_point(data = ratData3, aes(x = long, y = lat), color = "green", size = 3)
+#amphibian plots
+amphibians$ITISscientificName = as.factor(amphibians$ITISscientificName)
+amphibians = amphibians[amphibians$decimalLongitude > -130, ]
+amphibians = amphibians[amphibians$decimalLongitude < -75, ]
+amphibians = amphibians[amphibians$decimalLatitude > 15, ]
+amphibians = amphibians[amphibians$decimalLatitude < 55, ]
+gg2 <- (ggplot() + geom_polygon(data = usa, aes(x=long, y = lat, group = group), fill = "white", color = "black")
++ coord_fixed(1.3)  
++ geom_point(data = amphibians, aes(x = decimalLongitude , y = decimalLatitude), color = "blue", size = 0.5) 
++ facet_wrap(~ITISscientificName))
+ggsave("amphibiansAllUsPlot.png", plot = last_plot())
+#bird plots
+birds$ITISscientificName = as.factor(birds$ITISscientificName)
+birds = birds[birds$decimalLongitude > -130, ]
+birds = birds[birds$decimalLongitude < -75, ]
+birds = birds[birds$decimalLatitude > 15, ]
+birds = birds[birds$decimalLatitude < 55, ]
+gg2 <- (ggplot() + geom_polygon(data = usa, aes(x=long, y = lat, group = group), fill = "white", color = "black")
+        + coord_fixed(1.3)  
+        + geom_point(data = birds, aes(x = decimalLongitude , y = decimalLatitude), color = "purple", size = 0.5) 
+        + facet_wrap(~ITISscientificName))
+ggsave("birdsAllUsPlot.png", plot = last_plot())
+
+#reptile plots
+reptiles$ITISscientificName = as.factor(reptiles$ITISscientificName)
+reptiles = reptiles[reptiles$decimalLongitude > -130, ]
+reptiles = reptiles[reptiles$decimalLongitude < -75, ]
+reptiles = reptiles[reptiles$decimalLatitude > 15, ]
+reptiles = reptiles[reptiles$decimalLatitude < 55, ]
+gg2 <- (ggplot() + geom_polygon(data = usa, aes(x=long, y = lat, group = group), fill = "white", color = "black")
+        + coord_fixed(1.3)  
+        + geom_point(data = reptiles, aes(x = decimalLongitude , y = decimalLatitude), color = "green", size = 0.5) 
+        + facet_wrap(~ITISscientificName))
+ggsave("reptilesAllUsPlot.png", plot = last_plot())
+
+#mammal plots
+mammals$ITISscientificName = as.factor(mammals$ITISscientificName)
+mammals = mammals[mammals$decimalLongitude > -130, ]
+mammals = mammals[mammals$decimalLongitude < -75, ]
+mammals = mammals[mammals$decimalLatitude > -24, ]
+mammals = mammals[mammals$decimalLatitude < -50, ]
+gg2 <- (ggplot() + geom_polygon(data = usa, aes(x=long, y = lat, group = group), fill = "white", color = "black")
+        + coord_fixed(1.3)  
+        + geom_point(data = mammals, aes(x = decimalLongitude , y = decimalLatitude), color = "red", size = 0.5) 
+        + facet_wrap(~ITISscientificName))
+ggsave("mammalsAllUsPlot.png", plot = last_plot())
+
+
   
 
 
