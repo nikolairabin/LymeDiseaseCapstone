@@ -58,20 +58,25 @@ lymesState = lymesState[lymesState$X2018.Incidence > 0, ]
 
 #Plotting the varibales in merged data
 #hdi vs lyme
-lymesVHDI = ggplot() + geom_point(data = as.data.frame(lymesState), aes(x = X2018.Incidence, y = hdi))+ labs(title="Lyme Disease Incidence vs HDI(state)", x ="Lyme Disease Incidence", y = "HDI")
+lymesVHDI = ggplot() + geom_text(data = as.data.frame(lymesState), aes(x = hdi, y = X2018.Incidence, label = State))+ labs(title="Lyme Disease Incidence vs HDI(state)", x ="HDI", y = "Lyme Disease Incidence") 
+ggsave("plots/lymesVHDI.png", plot = last_plot())
 lymesVHDI
 #r and d vs lyme
-lymesVrAndD = ggplot() + geom_point(data = as.data.frame(lymesState), aes(x = X2018.Incidence, y = rAndD))
+lymesVrAndD = ggplot() + geom_text(data = as.data.frame(lymesState), aes(x = rAndD, y = X2018.Incidence, label = State))
+ggsave("plots/lymesVrAndD.png", plot = last_plot())
 lymesVrAndD
 #income per county vs lyme
-lymesVincome = ggplot() + geom_point(data = as.data.frame(allCountyData), aes(x = Cases2018, y = Per.capitaincome))
+lymesVincome = ggplot() + geom_point(data = as.data.frame(allCountyData), aes(x = Per.capitaincome, y = Cases2018))
+ggsave("plots/lymesVincome.png", plot = last_plot())
 lymesVincome
 #pop density vs lyme
-lymesVpopDen = ggplot() + geom_point(data = as.data.frame(allCountyData), aes(x = Cases2018, y = Population))
+lymesVpopDen = ggplot() + geom_point(data = as.data.frame(allCountyData), aes(x = Population, y = Cases2018))
+ggsave("plots/lymesVpopDen.png", plot = last_plot())
 lymesVpopDen
 #total pop vs lyme
-lymesVpopDen = ggplot() + geom_point(data = as.data.frame(allCountyData), aes(x = Cases2018, y = POPESTIMATE2019/1000000)) + labs(title="Lyme Disease Cases vs Total Population(county)", x ="Lyme Disease Cases", y = "Total Population(millions)")
-lymesVpopDen
+lymesVpopTotal = ggplot() + geom_point(data = as.data.frame(allCountyData), aes(x = POPESTIMATE2019/1000000, y = Cases2018)) + labs(title="Lyme Disease Cases vs Total Population(county)", x ="Total Population(millions)", y = "Lyme Disease Cases")
+ggsave("plots/lymesVpopTotal.png", plot = last_plot())
+lymesVpopTotal
 
 m <- lm(lymesState$hdi ~ lymesState$X2018.Incidence)
 rs <- summary(m)$r.squared
@@ -159,8 +164,8 @@ ggsave("reptilesAllUsPlot.png", plot = last_plot())
 mammals$ITISscientificName = as.factor(mammals$ITISscientificName)
 mammals = mammals[mammals$decimalLongitude > -130, ]
 mammals = mammals[mammals$decimalLongitude < -75, ]
-mammals = mammals[mammals$decimalLatitude > -24, ]
-mammals = mammals[mammals$decimalLatitude < -50, ]
+mammals = mammals[mammals$decimalLatitude > 15, ]
+mammals = mammals[mammals$decimalLatitude < 55, ]
 gg2 <- (ggplot() + geom_polygon(data = usa, aes(x=long, y = lat, group = group), fill = "white", color = "black")
         + coord_fixed(1.3)  
         + geom_point(data = mammals, aes(x = decimalLongitude , y = decimalLatitude), color = "red", size = 0.5) 
